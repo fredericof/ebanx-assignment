@@ -17,6 +17,6 @@ public class ConfigurationsController : BaseController
     public IResult  Reset()
     {
         _bankAccountRepository.Reset();
-        return Results.Ok();
+        return Results.Ok("OK");
     }
 }
