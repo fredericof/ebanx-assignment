@@ -62,10 +62,18 @@ public class EbanxAssignmentTests
         //Arrange
         await using var webApplication = new CustomWebApplicationFactory();
         using var httpClient = webApplication.CreateClient();
+        var payload = new { type = "deposit", destination = "100", amount = 10 };
+        var content = new StringContent(JsonSerializer.Serialize(payload), Encoding.UTF8, "application/json");
         
         //Act
+        var response = await httpClient.PostAsync($"http://localhost:5192/event", content);
         
         //Assert
+        response.StatusCode.Should().Be(HttpStatusCode.Created);
+        var responseContent = await response.Content.ReadAsStringAsync();
+        var result = JsonSerializer.Deserialize<dynamic>(responseContent);
+        Assert.Equal("100", (string)result.destination.id);
+        Assert.Equal(20, (int)result.destination.balance);
     }
 
     [Fact]
@@ -76,8 +84,11 @@ public class EbanxAssignmentTests
         using var httpClient = webApplication.CreateClient();
         
         //Act
-        
+        var response = await httpClient.GetAsync($"http://localhost:5192/balance?account_id=100");
+
         //Assert
+        response.StatusCode.Should().Be(HttpStatusCode.OK);
+        response.Content.Should().Be(20);
     }
 
     [Fact]
@@ -86,10 +97,15 @@ public class EbanxAssignmentTests
         //Arrange
         await using var webApplication = new CustomWebApplicationFactory();
         using var httpClient = webApplication.CreateClient();
+        var payload = new { type = "withdraw", origin = "200", amount = 10 };
+        var content = new StringContent(JsonSerializer.Serialize(payload), Encoding.UTF8, "application/json");
         
         //Act
+        var response = await httpClient.PostAsync($"http://localhost:5192/event", content);
         
         //Assert
+        response.StatusCode.Should().Be(HttpStatusCode.NotFound);
+        response.Content.Should().Be(0);
     }
 
     [Fact]
@@ -98,10 +114,18 @@ public class EbanxAssignmentTests
         //Arrange
         await using var webApplication = new CustomWebApplicationFactory();
         using var httpClient = webApplication.CreateClient();
+        var payload = new { type = "withdraw", origin = "100", amount = 5 };
+        var content = new StringContent(JsonSerializer.Serialize(payload), Encoding.UTF8, "application/json");
         
         //Act
+        var response = await httpClient.PostAsync($"http://localhost:5192/event", content);
         
         //Assert
+        response.StatusCode.Should().Be(HttpStatusCode.Created);
+        var responseContent = await response.Content.ReadAsStringAsync();
+        var result = JsonSerializer.Deserialize<dynamic>(responseContent);
+        Assert.Equal("100", (string)result.origin.id);
+        Assert.Equal(15, (int)result.origin.balance);
     }
 
     [Fact]
@@ -110,10 +134,20 @@ public class EbanxAssignmentTests
         //Arrange
         await using var webApplication = new CustomWebApplicationFactory();
         using var httpClient = webApplication.CreateClient();
+        var payload = new { type = "transfer", origin = "100", amount = 15, destination = "300" };
+        var content = new StringContent(JsonSerializer.Serialize(payload), Encoding.UTF8, "application/json");
         
         //Act
+        var response = await httpClient.PostAsync($"http://localhost:5192/event", content);
         
         //Assert
+        response.StatusCode.Should().Be(HttpStatusCode.Created);
+        var responseContent = await response.Content.ReadAsStringAsync();
+        var result = JsonSerializer.Deserialize<dynamic>(responseContent);
+        Assert.Equal("100", (string)result.origin.id);
+        Assert.Equal(0, (int)result.origin.balance);
+        Assert.Equal("300", (string)result.destination.id);
+        Assert.Equal(15, (int)result.destination.balance);
     }
 
     [Fact]
@@ -122,9 +156,14 @@ public class EbanxAssignmentTests
         //Arrange
         await using var webApplication = new CustomWebApplicationFactory();
         using var httpClient = webApplication.CreateClient();
+        var payload = new { type = "transfer", origin = "200", amount = 15, destination = "300" };
+        var content = new StringContent(JsonSerializer.Serialize(payload), Encoding.UTF8, "application/json");
         
         //Act
+        var response = await httpClient.PostAsync($"http://localhost:5192/event", content);
         
         //Assert
+        response.StatusCode.Should().Be(HttpStatusCode.NotFound);
+        response.Content.Should().Be(0);
     }
 }
