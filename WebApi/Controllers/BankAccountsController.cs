@@ -5,11 +5,11 @@ using Microsoft.AspNetCore.Mvc;
 namespace WebApi.Controllers;
 
 [Route("/balance")]
-public class BankAccounts : BaseController
+public class BankAccountsController : BaseController
 {
     private readonly IBankAccountService _bankAccountService;
     
-    public BankAccounts(IBankAccountService bankAccountService)
+    public BankAccountsController(IBankAccountService bankAccountService)
     {
         _bankAccountService = bankAccountService;
     }

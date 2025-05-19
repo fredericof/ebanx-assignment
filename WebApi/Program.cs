@@ -14,8 +14,10 @@ public class Program
         builder.Services.AddOpenApi();
         builder.Services.AddSwaggerGen();
 
-        builder.Services.AddSingleton<Database>();
+        // Dependency Injection
+        builder.Services.AddSingleton<BankAccountRepository>();
         builder.Services.AddScoped<IBankAccountService, BankAccountService>();
+        builder.Services.AddScoped<IEventService, EventService>();
 
         var app = builder.Build();
 

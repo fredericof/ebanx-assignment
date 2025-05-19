@@ -6,17 +6,17 @@ namespace WebApi.Controllers;
 [Route("/")]
 public class ConfigurationsController : BaseController
 {
-    private readonly Database _database;
+    private readonly BankAccountRepository _bankAccountRepository;
     
-    public ConfigurationsController(Database database)
+    public ConfigurationsController(BankAccountRepository bankAccountRepository)
     {
-        _database = database;
+        _bankAccountRepository = bankAccountRepository;
     }
     
     [HttpPost("reset")]
     public IResult  Reset()
     {
-        _database.Reset();
+        _bankAccountRepository.Reset();
         return Results.Ok();
     }
 }

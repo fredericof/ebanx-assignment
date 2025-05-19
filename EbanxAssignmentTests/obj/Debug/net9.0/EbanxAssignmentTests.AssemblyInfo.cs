@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("EbanxAssignmentTests")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+6230936df20e4b4d6b244e798d845dda5eb8c165")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+d51804a5e5c206a6d9f48433c8548b57f526319b")]
 [assembly: System.Reflection.AssemblyProductAttribute("EbanxAssignmentTests")]
 [assembly: System.Reflection.AssemblyTitleAttribute("EbanxAssignmentTests")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

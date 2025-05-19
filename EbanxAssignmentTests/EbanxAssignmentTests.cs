@@ -1,18 +1,25 @@
 ﻿using System.Net;
 using System.Text;
 using System.Text.Json;
+using Application;
 using FluentAssertions;
 
 namespace EbanxAssignmentTests;
 
-public class EbanxAssignmentTests
+public class EbanxAssignmentTests : IClassFixture<CustomWebApplicationFactory>
 {
-    [Fact]
+    private readonly CustomWebApplicationFactory webApplication;
+
+    public EbanxAssignmentTests(CustomWebApplicationFactory customWebApplication)
+    {
+        webApplication = customWebApplication;
+    }
+    
+    [Fact, TestPriority(1)]
     public async Task ResetState_ReturnsOk()
     {
         //Arrange
-        await using var webApplication = new CustomWebApplicationFactory();
-        using var httpClient = webApplication.CreateClient();
+        var httpClient = webApplication.CreateClient();
         
         //Act
         var response = await httpClient.PostAsync($"http://localhost:5192/reset", null);
@@ -21,12 +28,11 @@ public class EbanxAssignmentTests
         response.StatusCode.Should().Be(HttpStatusCode.OK);
     }
     
-    [Fact]
+    [Fact, TestPriority(2)]
     public async Task GetBalance_NonExistingAccount_ReturnsNotFound()
     {
         //Arrange
-        await using var webApplication = new CustomWebApplicationFactory();
-        using var httpClient = webApplication.CreateClient();
+        var httpClient = webApplication.CreateClient();
         
         //Act
         var response = await httpClient.GetAsync($"http://localhost:5192/balance?account_id=1234");
@@ -36,12 +42,11 @@ public class EbanxAssignmentTests
         (await response.Content.ReadAsStringAsync()).Should().Be("0");
     }
 
-    [Fact]
+    [Fact, TestPriority(3)]
     public async Task CreateAccount_WithInitialBalance_ReturnsCreated()
     {
         //Arrange
-        await using var webApplication = new CustomWebApplicationFactory();
-        using var httpClient = webApplication.CreateClient();
+        var httpClient = webApplication.CreateClient();
         var payload = new { type = "deposit", destination = "100", amount = 10 };
         var content = new StringContent(JsonSerializer.Serialize(payload), Encoding.UTF8, "application/json");
         
@@ -51,17 +56,21 @@ public class EbanxAssignmentTests
         //Assert
         response.StatusCode.Should().Be(HttpStatusCode.Created);
         var responseContent = await response.Content.ReadAsStringAsync();
-        var result = JsonSerializer.Deserialize<dynamic>(responseContent);
-        Assert.Equal("100", (string)result.destination.id);
-        Assert.Equal(10, (int)result.destination.balance);
+        var result = JsonSerializer.Deserialize<DTOBankAccountResponse>(
+            responseContent, 
+            new JsonSerializerOptions 
+                {
+                    PropertyNameCaseInsensitive = true
+                });
+        Assert.Equal("100", result.Destination.Id);
+        Assert.Equal(10, result.Destination.Balance);
     }
 
-    [Fact]
+    [Fact, TestPriority(4)]
     public async Task Deposit_ExistingAccount_ReturnsUpdatedBalance()
     {
         //Arrange
-        await using var webApplication = new CustomWebApplicationFactory();
-        using var httpClient = webApplication.CreateClient();
+        var httpClient = webApplication.CreateClient();
         var payload = new { type = "deposit", destination = "100", amount = 10 };
         var content = new StringContent(JsonSerializer.Serialize(payload), Encoding.UTF8, "application/json");
         
@@ -71,12 +80,17 @@ public class EbanxAssignmentTests
         //Assert
         response.StatusCode.Should().Be(HttpStatusCode.Created);
         var responseContent = await response.Content.ReadAsStringAsync();
-        var result = JsonSerializer.Deserialize<dynamic>(responseContent);
-        Assert.Equal("100", (string)result.destination.id);
-        Assert.Equal(20, (int)result.destination.balance);
+        var result = JsonSerializer.Deserialize<DTOBankAccountResponse>(
+            responseContent, 
+            new JsonSerializerOptions 
+            {
+                PropertyNameCaseInsensitive = true
+            });
+        Assert.Equal("100", result.Destination.Id);
+        Assert.Equal(20, result.Destination.Balance);
     }
 
-    [Fact]
+    [Fact, TestPriority(5)]
     public async Task GetBalance_ExistingAccount_ReturnsBalance()
     {
         //Arrange
@@ -91,7 +105,7 @@ public class EbanxAssignmentTests
         response.Content.Should().Be(20);
     }
 
-    [Fact]
+    [Fact, TestPriority(6)]
     public async Task Withdraw_NonExistingAccount_ReturnsNotFound()
     {
         //Arrange
@@ -108,7 +122,7 @@ public class EbanxAssignmentTests
         response.Content.Should().Be(0);
     }
 
-    [Fact]
+    [Fact, TestPriority(7)]
     public async Task Withdraw_ExistingAccount_ReturnsUpdatedBalance()
     {
         //Arrange
@@ -128,7 +142,7 @@ public class EbanxAssignmentTests
         Assert.Equal(15, (int)result.origin.balance);
     }
 
-    [Fact]
+    [Fact, TestPriority(8)]
     public async Task Transfer_ExistingAccount_ReturnsUpdatedBalances()
     {
         //Arrange
@@ -150,7 +164,7 @@ public class EbanxAssignmentTests
         Assert.Equal(15, (int)result.destination.balance);
     }
 
-    [Fact]
+    [Fact, TestPriority(9)]
     public async Task Transfer_NonExistingAccount_ReturnsNotFound()
     {
         //Arrange

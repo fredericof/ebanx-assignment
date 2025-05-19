@@ -4,15 +4,20 @@ namespace Application;
 
 public class BankAccountService : IBankAccountService
 {
-    private readonly Database _database;
+    private readonly BankAccountRepository _bankAccountRepository;
 
-    public BankAccountService(Database database)
+    public BankAccountService(BankAccountRepository bankAccountRepository)
     {
-        _database = database;
+        _bankAccountRepository = bankAccountRepository;
     }
     
     public async Task<decimal> GetBankAccountBalanceByAccountIdAsync(string bankAccountId)
     {
-        return _database.GetBankAccountById(bankAccountId).Balance;
+        BankAccount? bankAccount = _bankAccountRepository.GetBankAccountById(bankAccountId);
+
+        if (bankAccount == null)
+            throw new BankAccountNotFoundException();
+        
+        return bankAccount.Balance;
     }
 }
