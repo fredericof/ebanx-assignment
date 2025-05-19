@@ -4,11 +4,11 @@ using Microsoft.AspNetCore.Mvc;
 namespace WebApi.Controllers;
 
 [Route("/balance")]
-public class Balances : BaseController
+public class BankAccounts : BaseController
 {
     [HttpGet]
     public async Task<IResult> GetBalanceByAccountId([FromQuery] string accountId)
     {
-        return Results.Ok("Balance");
+        return Results.Ok("BankAccounts");
     }
 }
