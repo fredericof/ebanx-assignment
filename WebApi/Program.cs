@@ -1,3 +1,6 @@
+using Application;
+using Domain;
+
 namespace WebApi;
 
 public class Program
@@ -10,6 +13,9 @@ public class Program
         builder.Services.AddControllers();
         builder.Services.AddOpenApi();
         builder.Services.AddSwaggerGen();
+
+        builder.Services.AddSingleton<Database>();
+        builder.Services.AddScoped<IBankAccountService, BankAccountService>();
 
         var app = builder.Build();
 

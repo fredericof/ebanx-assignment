@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Http.HttpResults;
+using Application;
 using Microsoft.AspNetCore.Mvc;
 
 namespace WebApi.Controllers;
@@ -6,14 +6,17 @@ namespace WebApi.Controllers;
 [Route("/")]
 public class ConfigurationsController : BaseController
 {
-    public ConfigurationsController()
+    private readonly Database _database;
+    
+    public ConfigurationsController(Database database)
     {
-        
+        _database = database;
     }
     
     [HttpPost("reset")]
     public IResult  Reset()
     {
+        _database.Reset();
         return Results.Ok();
     }
 }

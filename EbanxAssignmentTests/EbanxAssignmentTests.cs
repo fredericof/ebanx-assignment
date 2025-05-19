@@ -32,8 +32,8 @@ public class EbanxAssignmentTests
         var response = await httpClient.GetAsync($"http://localhost:5192/balance?account_id=1234");
 
         //Assert
-        response.StatusCode.Should().Be(HttpStatusCode.NotFound);
-        response.Content.Should().Be(0);
+        response.StatusCode.Should().Be(HttpStatusCode.NotFound); 
+        (await response.Content.ReadAsStringAsync()).Should().Be("0");
     }
 
     [Fact]

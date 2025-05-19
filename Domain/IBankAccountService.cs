@@ -2,5 +2,5 @@ namespace Domain;
 
 public interface IBankAccountService
 {
-    public decimal GetBankAccountBalanceByAccountId(string bankAccountId);
+    public Task<decimal> GetBankAccountBalanceByAccountIdAsync(string bankAccountId);
 }

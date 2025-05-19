@@ -35,3 +35,7 @@
 /home/ubuntu/projects/ebanx-assignment/WebApi/bin/Debug/net9.0/Swashbuckle.AspNetCore.SwaggerGen.dll
 /home/ubuntu/projects/ebanx-assignment/WebApi/bin/Debug/net9.0/Swashbuckle.AspNetCore.SwaggerUI.dll
 /home/ubuntu/projects/ebanx-assignment/WebApi/obj/Debug/net9.0/WebApi.sourcelink.json
+/home/ubuntu/projects/ebanx-assignment/WebApi/bin/Debug/net9.0/Application.dll
+/home/ubuntu/projects/ebanx-assignment/WebApi/bin/Debug/net9.0/Domain.dll
+/home/ubuntu/projects/ebanx-assignment/WebApi/bin/Debug/net9.0/Application.pdb
+/home/ubuntu/projects/ebanx-assignment/WebApi/bin/Debug/net9.0/Domain.pdb
